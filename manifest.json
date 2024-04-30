@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Services Progress Result Collector",
+  "version": "1.0",
+  "permissions": ["webRequest", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://app.optery.com/",
+    "https://optery.com/",
+    "https://api.optery.com/",
+
+    "https://app.dataseal.io/",
+    "https://dataseal.io/",
+    "https://api.dataseal.io/",
+
+    "https://my.kanary.com/",
+
+    "https://incogni.com/",
+    "https://api.incogni.com/",
+
+    "https://monitor.mozilla.org/"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/send_16.png",
+      "32": "images/send_32.png",
+      "48": "images/send_48.png",
+      "128": "images/send_128.png"
+    }
+  },
+  "icons": {
+    "16": "images/send_16.png",
+    "32": "images/send_32.png",
+    "48": "images/send_48.png",
+    "128": "images/send_128.png"
+  }
+}
+
