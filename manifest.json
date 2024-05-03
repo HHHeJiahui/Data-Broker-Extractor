@@ -6,6 +6,12 @@
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://monitor.mozilla.org/user/dashboard"],
+      "js": ["content-scripts/mozilla-monitor.js"]
+    }
+  ],
   "host_permissions": [
     "https://app.optery.com/",
     "https://optery.com/",
