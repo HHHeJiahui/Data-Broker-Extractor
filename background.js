@@ -3,7 +3,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   (details) => {
     //DataSeal
     if (details.url.startsWith('https://api.dataseal.io/account/') && details.url.endsWith('/widgets/dashboard') && (details.type === 'xmlhttprequest' || details.type === 'fetch')) {
-      
+
       service = "DataSeal"
       chrome.storage.local.set({ 'service_flag': service });
 
@@ -14,7 +14,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       const subscribe_URL = "https://api.dataseal.io/me"
       const report_URL = "https://api.dataseal.io/account/" + userId + "/widgets/dashboard"
       const broker_URL = "https://api.dataseal.io/brokers?enabled=true"
-      
+
       const req_headers = {};
       for (const header of details.requestHeaders) {
         req_headers[header.name] = header.value;
@@ -49,7 +49,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     // Kanary
     else if (details.url === "https://my.kanary.com/api/account/me/" && (details.type === 'xmlhttprequest' || details.type === 'fetch')) {
-    
+
       service = "Kanary"
       chrome.storage.local.set({ 'service_flag': service });
 
@@ -58,7 +58,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
       const active_URL = "https://my.kanary.com/api/matches/summary/?page=1&match_status=3";
       const removed_URL = "https://my.kanary.com/api/matches/summary/?page=1&match_status=4";
-      const blocked_URL = "https://my.kanary.com/api/matches/summary/?page=1&match_status=5";  
+      const blocked_URL = "https://my.kanary.com/api/matches/summary/?page=1&match_status=5";
       const subscribe_URL = "https://my.kanary.com/api/account/me/";
 
       const req_headers = {};
@@ -101,7 +101,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     // Optery
     else if (details.url === "https://api.optery.com/api/optout/dashboard" && (details.type === 'xmlhttprequest' || details.type === 'fetch')) {
-    
+
       service = "Optery"
       chrome.storage.local.set({ 'service_flag': service });
 
@@ -145,7 +145,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     // Incogni
     else if (details.url.startsWith('https://api.incogni.com/api/users/') && details.url.endsWith('/data_removal_jobs/data_removal_tasks?page=1&itemsPerPage=15&pagination=true&group.broker=last_task') && (details.type === 'xmlhttprequest' || details.type === 'fetch')) {
-      
+
       service = "Incogni"
       chrome.storage.local.set({ 'service_flag': service });
 
@@ -163,11 +163,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       for (const header of details.requestHeaders) {
         req_headers[header.name] = header.value;
       }
-      
+
       fetchData(subscribe_URL, req_headers).then(data => {
         if (data.isSubscriptionActive === true) {
           chrome.storage.local.set({ 'is_subscribe': true });
-        } 
+        }
         else {
           chrome.storage.local.set({ 'is_subscribe': false });
         }
@@ -192,7 +192,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     // Mozilla Monitor
     else if (details.url === "https://monitor.mozilla.org/api/auth/session") {
-    
+
       service = "Mozilla"
       chrome.storage.local.set({ 'service_flag': service });
 
@@ -206,7 +206,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       for (const header of details.requestHeaders) {
         req_headers[header.name] = header.value;
       }
-      
+
       fetchData(subscribe_URL, req_headers).then(data => {
         if (data.user.hasOwnProperty("fxa") && data.user.fxa.hasOwnProperty("subscriptions") && data.user.fxa.subscriptions.length !== 0) {
           chrome.storage.local.set({ 'is_subscribe': true });
@@ -226,11 +226,26 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       // });
 
     }
-    return { cancel: false }; 
+    return { cancel: false };
   },
   { urls: ["<all_urls>"] },
   ["requestHeaders", "extraHeaders"]
 );
+
+chrome.runtime.onMessage.addListener((message) => {
+  const { site, data } = message
+  if (site === 'mozilla-monitor.org') {
+    // Data here now contains all rows from the mozilla monitor dashboard,
+    // as an array of objects with structure like this:
+    // {
+    //  'Company': "411.com"
+    //  'Date of the exposure': "Apr 9, 2024"
+    //  'Exposure type': "Info for sale"
+    //  'Status': "In progress"
+    // }
+    console.log(data)
+  }
+})
 
 
 // async function fetchMozillaData(url, header) {
@@ -277,7 +292,7 @@ async function fetchData(url, header) {
 
       if (url === "https://monitor.mozilla.org/user/dashboard") {
         const html = await response.text()
-        
+
         return html;
       }
       const data = await response.json();
