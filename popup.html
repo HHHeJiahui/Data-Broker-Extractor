@@ -166,9 +166,10 @@
   <div class="collapsible_content" style="display: none; text-align: center;" id="introContent">
     <div class="'logo">
       <br><span style="font-weight: bold; font-size: 22px;">Project organizers:<span><br><br>
-      <img src="images/queen_mary_logo.png" alt="HKUST(GZ)" width=15%; height=15%>&ensp;&ensp;&ensp;&ensp;
-      <img src="images/brave_logo.png" alt="brave" width=15%; height=15%>&ensp;&ensp;&ensp;&ensp;
-      <img src="images/hkust_logo.png" alt="brave" width=20%; height=20%>
+      <img src="images/queen_mary_logo.png" alt="QUML" width=15%; height=15%>&ensp;&ensp;&ensp;&ensp;
+      <img src="images/brave_logo.png" alt="Brave" width=15%; height=15%>&ensp;&ensp;&ensp;&ensp;
+      <img src="images/nw.svg" alt="NW" width=17%; height=17%>&ensp;&ensp;&ensp;&ensp;
+      <img src="images/hkust_logo.png" alt="HKUST" width=20%; height=20%>
     </div>
     <br>
     <div style="width: 85%; margin: 0 auto">
@@ -182,20 +183,17 @@
 
         As a participant in this study, 
         your role will be to use the designated services to request the removal of your own personal information from data broker databases. 
-        You will then be asked to send us weekly progress on service removal. 
-        The study is for <u>one month</u>, meaning you will send us removal progress data <u>4 times</u> at the same time each week. 
+        You will then be asked to send us progress data on service removal after <u>one month</u> of subscribing to the service. 
         Sending the results will take <u>less than one minute</u>.<br><br>
 
-        Your participation in this study is voluntary, 
-        and you may withdraw at any time. You are required to enter your personal data 
-        (e.g. full name, email, address, phone number, date of birth, etc.) 
+        You are required to enter your personal data (e.g. full name, email, address, phone number, date of birth, etc.) 
         in the service to make the service work properly. 
         However, <u>we do not collect any private data about you</u> - we only collect data about the effectiveness of the service.<br><br>
 
         Participants in this study will receive the following benefits:  
         <ul style="text-align: left; font-size: 14px;">
+          <li>We will offer you a <u>$40</u> Amazon shopping card as an additional bonus after you send us an update on the progress of your removal service.</li>
           <li>We will cover the subscription cost of the services, allowing you to use them for free to learn about the exposure of your private information and to protect your privacy. This is worth an average of <u>$17</u>.</li>
-          <li>We will pay you an additional <u>$15</u> as a bonus after you send us the updates on the removal progress of your service.</li>
         </ul>
       </p>
         
@@ -210,18 +208,16 @@
 
 
 
-
-
   <!-- Task 1: verify the subscription -->
   <button class="collapsible" id="collBotton1" style="font-size: 20px; font-weight: bold; background-color: #386A9B;">> Task 1: Verify Your Subscription&ensp;<span id="task1_state" style="font-weight: bold; color: #88C100;"></span></button>
   <div class="collapsible_content" style="display: none; text-align: center;" id="task1Content">
 
-    <!-- Step 1: Input Prolific ID -->
+    <!-- Step 1: Input Email -->
     <div class="container">
-      <p style="font-size: 18px;"><span style="color: #386A9B; font-weight: bold">Step 1</span>: Please copy your <span style="font-weight: bold;">Prolific ID</span> here (mandatory):</p>
-      <input type="text" id="prolificId_1" placeholder="Prolific ID", style="width: 200px;">
+      <p style="font-size: 18px;"><span style="color: #386A9B; font-weight: bold">Step 1</span>: Please input your <span style="font-weight: bold;">Email</span> here (mandatory):</p>
+      <input type="text" id="email_1" placeholder="Email Address", style="width: 200px;">
       <p id="idError_1" style="color:red; font-size: 12px;"></p>
-      <p style="font-weight: bold; font-size: 14px;"><u>*Please make sure the Prolific ID is correct, we will use the Prolific ID as your identifier and pay you by Prolific ID.</u></p><br>
+      <p style="font-weight: bold; font-size: 14px;"><u>*Please make sure the Email address is correct, we will use the Email address as your identifier.</u></p><br>
     </div>
 
     <div style="border-bottom: dashed #386A9B; width: 100%; height: 2px;"></div>
@@ -230,24 +226,20 @@
     <p style="font-size: 18px;"><span style="color: #386A9B; font-weight: bold">Step 2</span>: Please click the button below to verify that you have subscribed to the service.</p>
     <button id="verify" disabled>Verify Subscription</button>
     <p id="verify_result"></p>
-    <p id="completion_code_1" style="font-size: 18px; font-weight: bold; color: #386A9B;"></p>
+    <!-- <p id="completion_code_1" style="font-size: 18px; font-weight: bold; color: #386A9B;"></p> -->
   </div>
-
-
-
-
 
 
   <!-- Task 2: send the result -->
   <button class="collapsible" id="collBotton2" style="font-size: 20px; font-weight: bold; background-color: #3BCBCE;">> Task 2: Send Service Progress Result&ensp;<span id="task2_state"></span></button>
   <div class="collapsible_content" style="display: none;" id="task2Content">
 
-    <!-- Step 1: Input Prolific ID -->
+    <!-- Step 1: Input Email -->
     <div class="container">
-      <p style="font-size: 18px;"><span style="color: #3BCBCE; font-weight: bold">Step 1</span>: Please copy your <span style="font-weight: bold;">Prolific ID</span> here (mandatory):</p>
-      <input type="text" id="prolificId_2" placeholder="Prolific ID", style="width: 200px;">
+      <p style="font-size: 18px;"><span style="color: #3BCBCE; font-weight: bold">Step 1</span>: Please copy your <span style="font-weight: bold;">Email</span> here (mandatory):</p>
+      <input type="text" id="email_2" placeholder="Email Address", style="width: 200px;">
       <p id="idError_2" style="color:red; font-size: 12px;"></p>
-      <p style="font-weight: bold; font-size: 14px;"><u>*Please make sure the Prolific ID is correct, we will use the Prolific ID as your identifier and pay you by Prolific ID.</u></p><br>
+      <p style="font-weight: bold; font-size: 14px;"><u>*Please make sure the Email address is correct, we will use the Email address as your identifier.</u></p><br>
     </div>
 
     <div style="border-bottom: dashed #3BCBCE; width: 100%; height: 2px;"></div>
@@ -265,11 +257,11 @@
     <p class="container" style="font-size: 18px; color: #3BCBCE; font-weight: bold"><u>We commit not to collect any private data about you</u></p>
 
     <!-- Only for mozilla monitor copy data -->
-    <div id="copyData" class="container" style="display: none">
+    <!-- <div id="copyData" class="container" style="display: none">
       <br>
       <textarea type="text" id="inputField" placeholder="Please copy the page here!"></textarea><br>
       <button id="processButton" disabled>Process data</button><br><br>
-    </div>
+    </div> -->
 
     <button class="sub_collapsible" id="dataTable" style="font-size: 20px; font-weight: bold; text-align: center;">>> Click here to check extracted data <span id="fetchDataTime"></span> <<</button>
     <div class="collapsible_content" style="display: none;" id="dataTableContent">
@@ -324,7 +316,7 @@
     </div>
     
     <h2 id="result", style="font-weight: bold; font-size: 22px;"></h2>
-    <p id="completion_code_2" style="font-size: 18px; font-weight: bold; text-align: center;"></p>
+    <!-- <p id="completion_code_2" style="font-size: 18px; font-weight: bold; text-align: center;"></p> -->
 
     
   </div>

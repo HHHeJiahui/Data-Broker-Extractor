@@ -1,5 +1,6 @@
-// const ip_port = '5.153.238.0:24'
-const ip_port = '10.5.126.127:8080'
+const ip_port = '34.67.71.239:8080'
+// const ip_port = '10.5.126.127:8080'
+// const ip_port = '127.0.0.1:8080'
 
 
 const Incogni_key_list = ["broker.title", "state", "broker.sensitivity", "broker.recurringTaskIntervalDays", "broker.avgResolutionTimeInDays", 
@@ -14,17 +15,17 @@ const Optery_key_list = ["databroker.name", "databroker.exposure_confidence", "i
 const Kanary_key_list = ["site.domain", "status", "created_at", "updated_at", "last_submitted_at", 
 "latest_event.created_at", "latest_event.meta.failed", "latest_event.meta.reason", "google_search", "automated", "manually_added"]
 
+const Mozilla_key_list = ['Company', 'Exposure type', 'Date of the exposure', 'Status']
+
 
 var broker_data;
 var stat_data;
 var service;
-var current_prolific_id;
+var current_email;
 var timestamp;
 var fetch_data_time;
 var valid_count;
 var is_valid;
-var task_1_completion_code;
-var task_2_completion_code;
 var subscription_data;
 var send_data = {};
 var error_data;
@@ -32,8 +33,8 @@ var error_data;
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  const userIdInput_1 = document.getElementById('prolificId_1');
-  const userIdInput_2 = document.getElementById('prolificId_2');
+  const userIdInput_1 = document.getElementById('email_1');
+  const userIdInput_2 = document.getElementById('email_2');
   const errorElement_1 = document.getElementById('idError_1');
   const errorElement_2 = document.getElementById('idError_2');
 
@@ -55,14 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
   var random_code = null;
 
   window.onload = function() {
-    // Set pre-input Prolific ID into input box
-    userIdInput_1.value = localStorage.getItem('prolificIDValue') || '';
-    userIdInput_2.value = localStorage.getItem('prolificIDValue') || '';
+    // Set pre-input email address into input box
+    userIdInput_1.value = localStorage.getItem('emailaddress') || '';
+    userIdInput_2.value = localStorage.getItem('emailaddress') || '';
 
-    current_prolific_id = localStorage.getItem('prolificIDValue') || '';
+    current_email = localStorage.getItem('emailaddress') || '';
 
-    errorElement_1.textContent = userIdInput_1.value !== '' ? '' : 'Please input correct Prolific ID.';
-    errorElement_2.textContent = userIdInput_2.value !== '' ? '' : 'Please input correct Prolific ID.';
+    errorElement_1.textContent = userIdInput_1.value !== '' ? '' : 'Please input correct Email address.';
+    errorElement_2.textContent = userIdInput_2.value !== '' ? '' : 'Please input correct Email address.';
 
     verifyBotton.disabled = userIdInput_1.value !== '' ? false : true;
     sendButton.disabled = userIdInput_2.value !== '' ? false : true;
@@ -72,37 +73,43 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("task1_state").textContent = localStorage.getItem('task1_state') || '(To be verified)';
     document.getElementById("task1_state").style = localStorage.getItem('task1_state_style') || 'font-weight: bold; color: #f6db46;';
 
-    const curr_already_send = localStorage.getItem('already_send') || '0';
-    const curr_remaining_send = localStorage.getItem('remaining_send') || '4';
-    const curr_next_send_date = localStorage.getItem('next_send_date') || 'Unknown';
+    // Set task 2 state
 
-    document.getElementById("task2_state").textContent = localStorage.getItem('task2_state') || '(Send: ' + curr_already_send + ', Remain: ' + curr_remaining_send + ', Next: ' + curr_next_send_date + ')';
-    document.getElementById("task2_state").style = localStorage.getItem('task2_state_style') || 'font-weight: bold; color: #f6db46;';
+    const curr_send_times = localStorage.getItem('send_times') || '0';
+
+    if (curr_send_times !== '0') {
+      document.getElementById("task2_state").textContent = '(Send times: ' + curr_send_times + ')';
+      document.getElementById("task2_state").style = localStorage.getItem('task2_state_style') || 'font-weight: bold; color: #f6db46;';
+    }
+    else {
+      document.getElementById("task2_state").textContent = localStorage.getItem('task2_state') || '(To be send)';
+      document.getElementById("task2_state").style = localStorage.getItem('task2_state_style') || 'font-weight: bold; color: #f6db46;';
+    }
   };
 
-  // Input Prolific ID in task 1 and verify
+  // Input Email in task 1 and verify
   userIdInput_1.addEventListener('input', function() {
     const userId = userIdInput_1.value.trim();
     userIdInput_2.value = userId
-    current_prolific_id = userId;
+    current_email = userId;
     // const isValid = userId.length > 0;
     verifyBotton.disabled = userId.length > 0 ? false : true;
-    errorElement_1.textContent = userId.length > 0 ? '' : 'Please input correct Prolific ID.';
-    errorElement_2.textContent = userId.length > 0 ? '' : 'Please input correct Prolific ID.';
-    localStorage.setItem('prolificIDValue', userId);
+    errorElement_1.textContent = userId.length > 0 ? '' : 'Please input correct Email address.';
+    errorElement_2.textContent = userId.length > 0 ? '' : 'Please input correct Email address.';
+    localStorage.setItem('emailaddress', userId);
   });
 
-  // Input Prolific ID in task 2 and verify
+  // Input Email in task 2 and verify
   userIdInput_2.addEventListener('input', function() {
     const userId = userIdInput_2.value.trim();
     userIdInput_1.value = userId
-    current_prolific_id = userId;
+    current_email = userId;
     // const isValid = userId.length > 0;
     sendButton.disabled = userId.length > 0 ? false : true;
     reportErrorButton.disabled = userId.length > 0 ? false : true;
-    errorElement_1.textContent = userId.length > 0 ? '' : 'Please input correct Prolific ID.';
-    errorElement_2.textContent = userId.length > 0 ? '' : 'Please input correct Prolific ID.';
-    localStorage.setItem('prolificIDValue', userId);
+    errorElement_1.textContent = userId.length > 0 ? '' : 'Please input correct Email address.';
+    errorElement_2.textContent = userId.length > 0 ? '' : 'Please input correct Email address.';
+    localStorage.setItem('emailaddress', userId);
   });
   
   // collapse project intro
@@ -153,10 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
   verifyBotton.addEventListener('click', function() {
     chrome.storage.local.get(['is_subscribe'], (result) => {
       if (result.is_subscribe === true) {
-        if (random_code === null) {
-          random_code = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
-        }
-        task_1_completion_code = current_prolific_id + '_' + random_code
         sendSubscription();
       }
       if (result.is_subscribe === false) {
@@ -367,69 +370,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mozilla
     else if (result.service_flag === "Mozilla") {
+
       // Display block
-      document.getElementById('copyData').style.display = 'block';
+      // document.getElementById('copyData').style.display = 'block';
 
       // When user clikc process button, then extract data and display in table
-      processButton.addEventListener('click', function() {
+      // processButton.addEventListener('click', function() {
 
-        // Extract data, and turn into json format
-        const extractJson = extractInfoToJSON(inputField.value);
-        inputField.value = ''
-        console.log(extractJson);
-        if (extractJson.hasOwnProperty("manuallyFixed") && extractJson.hasOwnProperty("autoRemoved") && extractJson.hasOwnProperty("inProgress")) {
-          const temp_manually = extractJson.manuallyFixed;
-          const temp_auto = extractJson.autoRemoved;
-          const temp_inProgress = extractJson.inProgress;
-          stat.textContent = "Auto removed: " + temp_auto + ", Manually fixed: " + temp_manually + ", In progress: " + temp_inProgress;
-        } else {
-          stat.textContent = 'No statistics available. Please try copy/paste again!';
-        }
+      //   // Extract data, and turn into json format
+      //   const extractJson = extractInfoToJSON(inputField.value);
+      //   inputField.value = ''
+      //   console.log(extractJson);
+      //   if (extractJson.hasOwnProperty("manuallyFixed") && extractJson.hasOwnProperty("autoRemoved") && extractJson.hasOwnProperty("inProgress")) {
+      //     const temp_manually = extractJson.manuallyFixed;
+      //     const temp_auto = extractJson.autoRemoved;
+      //     const temp_inProgress = extractJson.inProgress;
+      //     stat.textContent = "Auto removed: " + temp_auto + ", Manually fixed: " + temp_manually + ", In progress: " + temp_inProgress;
+      //   } else {
+      //     stat.textContent = 'No statistics available. Please try copy/paste again!';
+      //   }
   
-        // Print removal progress as table
-        if (extractJson.hasOwnProperty("exposures") && extractJson.exposures.length > 0) {
-          contentElement.innerHTML = "";
-          contentElement.style = "";
-          contentElement.appendChild(createHtmlTable(extractJson.exposures, ['dataBroker', 'status', 'dateOfExposure']));
+      //   // Print removal progress as table
+      //   if (extractJson.hasOwnProperty("exposures") && extractJson.exposures.length > 0) {
+      //     contentElement.innerHTML = "";
+      //     contentElement.style = "";
+      //     contentElement.appendChild(createHtmlTable(extractJson.exposures, ['dataBroker', 'status', 'dateOfExposure']));
 
-          broker_data = extractJson.exposures;
-          stat_data = {
-            manuallyFixed: extractJson.manuallyFixed,
-            autoRemoved: extractJson.autoRemoved,
-            inProgress: extractJson.inProgress,
-          },
-          service = "Mozilla";
-          fetch_data_time = result.update_time;
-          valid_count = countValidObject(extractJson.exposures, 'dataBroker');
-          is_valid = countValidObject(extractJson.exposures, 'dataBroker') > extractJson.exposures.length * 0.8;
+      //     broker_data = extractJson.exposures;
+      //     stat_data = {
+      //       manuallyFixed: extractJson.manuallyFixed,
+      //       autoRemoved: extractJson.autoRemoved,
+      //       inProgress: extractJson.inProgress,
+      //     },
+      //     service = "Mozilla";
+      //     fetch_data_time = result.update_time;
+      //     valid_count = countValidObject(extractJson.exposures, 'dataBroker');
+      //     is_valid = countValidObject(extractJson.exposures, 'dataBroker') > extractJson.exposures.length * 0.8;
 
-          const curr_update_time = result.update_time.replace('T', ' ').slice(0, 10)
+      //     const curr_update_time = result.update_time.replace('T', ' ').slice(0, 10)
+      //   fetchDataTimeIndicator.textContent = '(extracted at ' + curr_update_time + ')'
+      //   } else {
+      //     contentElement.innerHTML = "<p>No data available. Please try copy/paste again!<p>";
+      //     contentElement.style = "font-weight: bold; text-align: center; font-size: 20px; color: #FF003C";
+      //   }
+      // });
+
+      
+      if (result.statData) {
+        const temp_manually = result.statData['Manually fixed'];
+        const temp_removed = result.statData['Auto-removed'];
+        const temp_inProgress = result.statData['In progress'];
+        stat.textContent = "Manually fixed: " + temp_manually + ", Auto-removed: " + temp_removed + ", In progress: " + temp_inProgress;
+      } else {
+        stat.textContent = 'No statistics available.';
+      }
+
+
+      // Print removal progress as table
+      if (result.fetchData) {
+        // const flattenedData = result.fetchData.map(item => flattenObject(item));
+        const filteredData = filterData(result.fetchData, Mozilla_key_list);
+        contentElement.appendChild(createHtmlTable(filteredData, Mozilla_key_list));
+
+        broker_data = filteredData;
+        stat_data = result.statData;
+        service = "Mozilla";
+        fetch_data_time = result.update_time;
+        valid_count = countValidObject(filteredData, 'Company');
+        is_valid = countValidObject(filteredData, 'Company') > filteredData.length * 0.8;
+
+        const curr_update_time = result.update_time.replace('T', ' ').slice(0, 10)
         fetchDataTimeIndicator.textContent = '(extracted at ' + curr_update_time + ')'
-        } else {
-          contentElement.innerHTML = "<p>No data available. Please try copy/paste again!<p>";
-          contentElement.style = "font-weight: bold; text-align: center; font-size: 20px; color: #FF003C";
-        }
-      });
-
-      // if (result.fetchData) {
-      //   const temp = document.getElementById('mozillaResult');
-      //   temp.innerHTML = result.fetchData;
-
-      //   temp_button = temp.querySelector(".Button_button__iA3wi");
-
-      //   var temp_result;
-      //   if (temp_button) {
-      //     temp_result = '<p>True</p>';
-      //     temp_button.click();
-
-      //     const updatedHtml = temp.innerHTML;
-
-      //     temp.innerHTML = updatedHtml;
-      //   }
-      //   else {
-      //     temp_result = '<p>False</p>';
-      //   }
-      // }
+      } else {
+        contentElement.innerHTML = "<p>No data available. Please refresh the page.<p>";
+        contentElement.style = "font-weight: bold; text-align: center; font-size: 20px; color: #FF003C";
+      }
 
     }
   });  
@@ -504,13 +519,13 @@ function flattenObject(ob, parentPrefix = '') {
 // Filter the data by pre-define key list
 function filterData(data, keys) {
   return data.map(item => {
-      const newItem = {};
-      keys.forEach(key => {
-          if (item.hasOwnProperty(key)) {
-              newItem[key] = item[key];
-          }
-      });
-      return newItem;
+    const newItem = {};
+    keys.forEach(key => {
+        if (item.hasOwnProperty(key)) {
+            newItem[key] = item[key];
+        }
+    });
+    return newItem;
   });
 }
 
@@ -567,9 +582,8 @@ function countValidObject(data, key) {
 
 function sendSubscription() {
   subscription_data = {
-    "prolific_id": current_prolific_id,
+    "email": current_email,
     'service': service,
-    "completion_code_1": task_1_completion_code,
     "timestamp": new Date().toISOString()
   }
   fetch('http://' + ip_port, {
@@ -581,7 +595,7 @@ function sendSubscription() {
   })
   .then(response => {
     if (response.ok) {
-      document.getElementById('verify_result').innerHTML = 'Successfully verify your subscription.<br>Your <u>Task 1 complection code</u> (also the <u>qualifying code for Task 2</u>) is:';
+      document.getElementById('verify_result').innerHTML = 'Successfully verify your subscription.';
       document.getElementById('verify_result').style = 'color: #88C100; font-size: 18px;';
 
       document.getElementById("task1_state").textContent = '(Complete)';
@@ -594,13 +608,12 @@ function sendSubscription() {
       throw new Error('Failed, please refresh the page and try again.');
     }
   })
-  .then(data => {
-    document.getElementById('completion_code_1').textContent = data.completion_code;
-  })
+  // .then(data => {
+  //   document.getElementById('completion_code_1').textContent = data.completion_code;
+  // })
   .catch(error => {
     document.getElementById('verify_result').textContent = 'Failed to verify subscription.' + error;
     document.getElementById('verify_result').style = 'color: #FF003C; font-size: 18px;';
-    document.getElementById('completion_code_1').textContent = '';
   });
 }
 
@@ -616,7 +629,7 @@ function sendData() {
       "broker_data": broker_data,
       "stat_data": stat_data,
       "service": service,
-      "prolific_id": current_prolific_id,
+      "email": current_email,
       "timestamp": new Date().toISOString(),
       "fetch_data_time": fetch_data_time,
       "valid_count": valid_count,
@@ -639,38 +652,16 @@ function sendData() {
     })
     .then(data => {
       curr_count = data.count;
-      curr_more_than_week = data.more_than_week;
-      curr_completion_code = data.completion_code
+      // curr_more_than_week = data.more_than_week;
+      // curr_completion_code = data.completion_code
 
-      const next_send_date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      document.getElementById('result').innerHTML = 'Service result send successed!',
+      document.getElementById('result').style = 'color: #88C100'
 
-      if (curr_count < 4) {
-        if (curr_more_than_week === true) {
-          document.getElementById('result').innerHTML = 'Service result send successed.',
-          document.getElementById('result').style = 'color: #88C100'
-
-          document.getElementById("task2_state").textContent = '(Send: ' + curr_count + ', Remain: ' + (4 - curr_count) + ', Next: ' + next_send_date + ')';
-          document.getElementById("task2_state").style = 'font-weight: bold; color: #f6db46;';
-          localStorage.setItem('already_send', curr_count);
-          localStorage.setItem('remaining_send', (4 - curr_count));
-          localStorage.setItem('next_send_date', next_send_date);
-        }
-        else {
-          document.getElementById('result').textContent = 'Please do not send it too frequently, please send again on ' + next_send_date,
-          document.getElementById('result').style = 'color: #FF003C'
-        }
-      }
-      else if (curr_count === 4) {
-
-        document.getElementById('result').innerHTML = 'Service result send successed, thank you for your participation!<br>Your <u>Task 2 complection code</u> is:',
-        document.getElementById('result').style = 'color: #88C100'
-        document.getElementById('completion_code_2').textContent = curr_completion_code;
-
-        document.getElementById("task2_state").textContent = '(Complete)';
-        document.getElementById("task2_state").style = 'font-weight: bold; color: #78eb7c;';
-        localStorage.setItem('task2_state', '(Complete)');
-        localStorage.setItem('task2_state_style', 'font-weight: bold; color: #78eb7c;');
-      }
+      document.getElementById("task2_state").textContent = '(Send times: ' + curr_count + ')';
+      document.getElementById("task2_state").style = 'font-weight: bold; color: #f6db46;';
+      localStorage.setItem('send_times', curr_count);
+      localStorage.setItem('task2_state_style', 'font-weight: bold; color: #f6db46;');
     })
     .catch(error => {
       document.getElementById('result').textContent = error.message;
@@ -694,7 +685,7 @@ function sendErrorData() {
       error_data = {
         "error": selectedValue,
         "service": service,
-        "prolific_id": current_prolific_id,
+        "email": current_email,
         "timestamp": new Date().toISOString(),
         "valid_count": valid_count,
         "is_valid": is_valid        
